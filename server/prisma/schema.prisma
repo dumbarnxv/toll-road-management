@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+model DailyRevenue {
+  id          Int     @id @default(autoincrement())
+  date        DateTime @unique
+  boothId     String
+  totalFee    Float
+  vehicleCount Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BoothPerformance {
+  id              Int     @id @default(autoincrement())
+  boothId         String  @unique
+  totalRevenue    Float   @default(0)
+  avgFee          Float   @default(0)
+  totalVehicles   Int     @default(0)
+  peakHour        Int?
+  lastUpdated     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TrafficTrend {
+  id              Int     @id @default(autoincrement())
+  date            DateTime
+  hour            Int
+  vehicleCount    Int
+  carCount        Int     @default(0)
+  truckCount      Int     @default(0)
+  bikeCount       Int     @default(0)
+  busCount        Int     @default(0)
+  createdAt       DateTime @default(now())
+
+  @@unique([date, hour])
+}
+
+model AIInsight {
+  id          Int     @id @default(autoincrement())
+  type        String  // "traffic" or "revenue"
+  content     String
+  generatedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
